@@ -15,6 +15,7 @@ def main():
     # wu.tt.test.test_all()  # torch package
     # wu.tflt.test.test_all()  # tflite package
     # wu.tts.test.test_all()  # tts package
+    # wu.tts.test.run_machine_buddy_gui_test()
     # wu.models.test.test_all()  # models package
     return
 
