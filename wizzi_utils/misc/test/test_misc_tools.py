@@ -1110,7 +1110,6 @@ def test_all():
     make_cuda_invisible_test()
     profiler_test()
     os_test()
-    get_wizzi_utils_root_test()
     main_wrapper_test()
     to_str_test()
     save_load_np_test()
