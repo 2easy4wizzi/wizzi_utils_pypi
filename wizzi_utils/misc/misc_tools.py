@@ -547,15 +547,6 @@ def get_system_info() -> str:
     return str(named_tuple)
 
 
-def get_wizzi_utils_root() -> str:
-    """
-    :return:
-    """
-    # project_root/misc/misc_tools.py -> remove the py and the misc folder
-    project_root = os.path.dirname(os.path.dirname(get_file_name()))
-    return project_root
-
-
 def get_py_version() -> str:
     """
     on linux there is \n and then gcc
@@ -1956,7 +1947,7 @@ def cpu_info(one_liner: bool = False, tabs: int = 1):
 
 def wizzi_utils_requirements():
     print('A snapshot of my environment packages:')
-    req_file = '../resources/wizzi_utils_requirements.txt'
+    req_file = '{}/resources/wizzi_utils_requirements.txt'.format(get_repo_root(repo_name='wizzi_utils_pypi'))
     _ = read_file_lines(fp=req_file, ack=True, tabs=0)
     return
 
@@ -2676,7 +2667,7 @@ def add_resource_folder_to_path(resources_dir: str) -> None:
     return
 
 
-def get_repo_root(repo_name: str = 'repo', ack: bool = False) -> None:
+def get_repo_root(repo_name: str = 'repo', ack: bool = False) -> str:
     """
     :param repo_name:
     :param ack:

@@ -198,12 +198,6 @@ def os_test():
     return
 
 
-def get_wizzi_utils_root_test():
-    mt.get_function_name(ack=True, tabs=0)
-    print('\t{}'.format(mt.get_wizzi_utils_root()))
-    return
-
-
 def main_wrapper_test():
     def temp_function():
         print('hello_world')
@@ -944,9 +938,8 @@ def get_linkable_exception_test():
 def generate_requirements_file_test(real_req: bool = False):
     mt.get_function_name_and_line(ack=True, tabs=0)
     if real_req:  # for saving a snapshot for the users
-        proj_root = mt.get_wizzi_utils_root()
-        repo_root = '{}/..'.format(proj_root)
-        fp = os.path.abspath('{}/resources/wizzi_utils_requirements.txt'.format(repo_root))
+        proj_root = mt.get_repo_root(repo_name='wizzi_utils_pypi')
+        fp = os.path.abspath('{}/resources/wizzi_utils_requirements.txt'.format(proj_root))
     else:
         fp = '{}/requirements.txt'.format(PLAY_GROUND)
     mt.generate_requirements_file(fp_out=fp)
