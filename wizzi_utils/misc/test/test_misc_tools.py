@@ -921,7 +921,7 @@ def get_linkable_exception_test():
 def generate_requirements_file_test(real_req: bool = False):
     mt.get_function_name_and_line(ack=True, tabs=0)
     if real_req:  # for saving a snapshot for the users
-        test_misc_file = get_file_name(depth=1)
+        test_misc_file = mt.get_file_name(depth=1)
         test_misc_dir = os.path.dirname(test_misc_file)
         main_src_dir = '{}/../../'.format(test_misc_dir)
         fp = os.path.abspath('{}/wizzi_utils_requirements.txt'.format(main_src_dir))
