@@ -580,6 +580,19 @@ def video_creator_mp4_test():
 
 def video_creator_size_test():
     wu.get_function_name(ack=True, tabs=0)
+
+    if wu.is_windows():  # fix for mkv files
+        # dll for H264 and X264 codecs for python 3.8
+        # set this to the dir of the dll
+        mkv_dll_path = r'{}/resources'.format(wu.get_repo_root(repo_name='wizzi_utils_pypi'))
+        if not os.path.exists(mkv_dll_path):
+            print('not found {}'.format(os.path.abspath(mkv_dll_path)))
+            exit(-9)
+        path_env = wu.get_env_variable(key='PATH')
+        path_env = '{};{}'.format(path_env, os.path.abspath(mkv_dll_path))  # add mkv_dll_path
+        wu.set_env_variable(key='PATH', val=path_env)
+        # wu.get_env_variable(key='PATH', ack=True)
+
     wu.add_resource_folder_to_path(resources_dir='../resources')
     # now open video file
     vid_name = mtt.DOG1
