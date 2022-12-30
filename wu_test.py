@@ -2,6 +2,10 @@ import wizzi_utils as wu
 
 
 def main():
+    # TODO 1 change images on md file to this repo
+    # TODO 2 md file add repo link
+    # TODO 3 check warning in reqs: update to safe reqs
+    #           update req txt
     # wu.test_all_modules()
     # wu.test.generate_requirements_file_test(real_req=True)
     # wu.wizzi_utils_requirements()
