@@ -1275,66 +1275,6 @@ def add_color(
     return out_string
 
 
-# noinspection PyTypeChecker
-def init_logger(logger_path: str = './log.txt') -> io.TextIOWrapper:
-    """
-    :param: logger_path
-    :return: logger obj
-    see logger_test()
-    """
-    global logger
-    logger = open(file=logger_path, mode='w', encoding='utf-8')
-    return logger
-
-
-def flush_logger() -> None:
-    """
-    good for loops - writes every iteration if used
-    see logger_test()
-    """
-    global logger
-    if logger is not None:
-        logger.flush()
-    return
-
-
-def log_print(line: str, tabs: int = 0) -> None:
-    """
-    :param line:
-    :param tabs:
-    :return:
-    see logger_test()
-    """
-    global logger
-    print('{}{}'.format(tabs * '\t', line))
-    if logger is not None:
-        logger.write('{}{}\n'.format(tabs * '\t', line))
-    return
-
-
-def log_print_dict(my_dict, tabs: int = 1) -> None:
-    """
-    :param my_dict:
-    :param tabs:
-    :return:
-    see logger_test()
-    """
-    for k, v in my_dict.items():
-        log_print('{}{}: {}'.format(tabs * '\t', k, v))
-    return
-
-
-def close_logger() -> None:
-    """
-    :return:
-    see logger_test()
-    """
-    global logger
-    if logger is not None:
-        logger.close()
-    return
-
-
 def create_dir(dir_path: str, ack: bool = True, tabs: int = 1):
     """
     :param dir_path:
@@ -1948,7 +1888,7 @@ def cpu_info(one_liner: bool = False, tabs: int = 1):
 def wizzi_utils_requirements():
     print('A snapshot of my environment packages:')
     req_file = '{}/resources/wizzi_utils_requirements.txt'.format(get_repo_root(repo_name='wizzi_utils_pypi'))
-    _ = read_file_lines(fp=req_file, ack=True, tabs=0)
+    _ = read_file_lines(fp=req_file, ack=True)
     return
 
 
@@ -2579,7 +2519,6 @@ def read_file_lines(
         clear_r: bool = True,  # remove \r (cartridge)
         clear_t: bool = True,  # remove \t (tabs)
         ack: bool = False,
-        tabs: int = 1
 ) -> list:
     lines = []
     if os.path.exists(fp):

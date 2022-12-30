@@ -943,7 +943,7 @@ def generate_requirements_file_test(real_req: bool = False):
     else:
         fp = '{}/requirements.txt'.format(PLAY_GROUND)
     mt.generate_requirements_file(fp_out=fp)
-    _ = mt.read_file_lines(fp=fp, ack=True, tabs=0)
+    _ = mt.read_file_lines(fp=fp, ack=True)
     return
 
 
