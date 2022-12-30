@@ -47,8 +47,8 @@ setup(
     long_description_content_type="text/markdown",
     author='Gilad Eini',
     author_email='giladEini@gmail.com',
-    url='https://github.com/2easy4wizzi/wizzi_utils',  # link to github
-    download_url='https://github.com/2easy4wizzi/wizzi_utils/archive/refs/tags/v_8.0.0.tar.gz',
+    url='https://github.com/2easy4wizzi/wizzi_utils_pypi',  # link to github
+    download_url='https://github.com/2easy4wizzi/wizzi_utils_pypi/archive/refs/tags/v_8.0.0.tar.gz',
     keywords=[  # Keywords that define your package best
         'debugging tools',
         'json',
