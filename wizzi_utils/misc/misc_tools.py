@@ -2275,7 +2275,6 @@ def generate_requirements_file(fp_out: str, ack: bool = True) -> None:
         # out = run_shell_command_and_get_out(cmd='pip list', ack_cmd=True, ack_out=True)
         # run_shell_command(cmd="which python", ack=True)
 
-        # init_logger()
         # main_wrapper()
         out.write('# main_wrapper:\n')
         out.write('# * Run started at {}\n'.format(get_time_stamp(format_s='%d-%m-%Y %H:%M:%S')))

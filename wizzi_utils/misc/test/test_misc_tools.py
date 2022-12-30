@@ -528,23 +528,6 @@ def add_color_test():
     return
 
 
-def logger_test():
-    mt.get_function_name(ack=True, tabs=0)
-    mt.create_dir(TEMP_FOLDER1)
-    path = '{}/{}_log_{}.txt'.format(TEMP_FOLDER1, JUST_A_NAME, mt.get_time_stamp(format_s='%Y_%m_%d_%H_%M_%S'))
-    mt.init_logger(logger_path=path)
-    mt.log_print(line='\tline 1')
-    mt.flush_logger()
-    mt.log_print(line='line 2', tabs=1)
-    mt.log_print(line='line 3', tabs=3)
-    mt.close_logger()
-
-    print('reading from {}'.format(path))
-    mt.read_file_lines(fp=path, ack=True)
-    mt.delete_dir_with_files(TEMP_FOLDER1)
-    return
-
-
 def create_and_delete_empty_dir_test():
     mt.get_function_name(ack=True, tabs=0)
     mt.create_dir(dir_path=TEMP_FOLDER1)
@@ -1132,7 +1115,6 @@ def test_all():
     get_function_name_and_line_test()
     get_base_file_and_function_name_test()
     add_color_test()
-    logger_test()
     create_and_delete_empty_dir_test()
     create_and_delete_dir_with_files_test()
     move_file_test()
