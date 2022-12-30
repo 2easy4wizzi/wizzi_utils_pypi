@@ -5,6 +5,7 @@ from wizzi_utils.json import json_tools as jt
 import socket
 import os
 import threading
+from datetime import datetime
 
 SERVER_ADDRESS = ('localhost', 10000)
 BUF_LEN = 20
@@ -247,6 +248,95 @@ def get_mac_address_uuid_test():
     return
 
 
+# noinspection PyPackageRequirements
+def big_query_package_by_month_test():
+    """
+    # package first release Feb 22, 2021 so not expecting to have 2021-01-01
+    # Run started at 27-10-2022 09:36:49
+    results for last 21 months:
+        pip_reqs       month
+    0        149  2022-10-01
+    1         22  2022-09-01
+    2         23  2022-08-01
+    3         56  2022-07-01
+    4         49  2022-06-01
+    5         42  2022-05-01
+    6         21  2022-04-01
+    7         64  2022-03-01
+    8         16  2022-02-01
+    9          1  2022-01-01
+    10         1  2021-12-01
+    11        24  2021-11-01
+    12        27  2021-10-01
+    13         2  2021-09-01
+    14        53  2021-08-01
+    15        83  2021-07-01
+    16        78  2021-06-01
+    17        91  2021-05-01
+    18        78  2021-04-01
+    19        38  2021-03-01
+    20         6  2021-02-01
+    time for all: 0:03:30
+
+
+    results for last 21 months:
+         hits       month
+    0    3214  2022-10-01
+    1    2270  2022-09-01
+    2    2916  2022-08-01
+    3    3297  2022-07-01
+    4    3679  2022-06-01
+    5    2651  2022-05-01
+    6    2647  2022-04-01
+    7    5968  2022-03-01
+    8    3846  2022-02-01
+    9    3439  2022-01-01
+    10   2484  2021-12-01
+    11   3065  2021-11-01
+    12   4181  2021-10-01
+    13   3443  2021-09-01
+    14   5326  2021-08-01
+    15  12155  2021-07-01
+    16   7951  2021-06-01
+    17  13929  2021-05-01
+    18   6436  2021-04-01
+    19   1748  2021-03-01
+    20    231  2021-02-01
+    time for all: 0:03:32
+    """
+
+    mt.get_function_name(ack=True, tabs=0)
+
+    cred_file = '{}/secret_keys/credentialsBigQ.json'.format(mt.get_repo_root(repo_name='wizzi_utils'))
+    if not os.path.exists(cred_file):
+        mt.exception_error(e='credentials file not found {}'.format(os.path.abspath(cred_file)))
+        return
+
+    mt.set_env_variable(
+        key='GOOGLE_APPLICATION_CREDENTIALS',
+        val=cred_file,
+        ack=True
+    )
+    months_from_wu_release = 3
+    # def diff_month(d1: datetime, d2: datetime) -> int:
+    #     return (d1.year - d2.year) * 12 + d1.month - d2.month
+    # WU_PUBLISH_DATE = datetime(year=2021, month=2, day=22)
+    # months_from_wu_release = diff_month(datetime.today(), WU_PUBLISH_DATE) + 1  # +1: include this month
+
+    st.big_query_package_by_month(
+        package_name='wizzi-utils',  # package first release Feb 22, 2021
+        months_back=months_from_wu_release,
+        only_pip=True
+    )
+
+    st.big_query_package_by_month(
+        package_name='wizzi-utils',  # package first release Feb 22, 2021
+        months_back=months_from_wu_release,
+        only_pip=False
+    )
+    return
+
+
 def test_all():
     print('{}{}:'.format('-' * 5, mt.get_base_file_and_function_name()))
     open_server_test()
@@ -262,5 +352,6 @@ def test_all():
     get_all_macs_test()
     get_active_con_mac_test()
     get_mac_address_uuid_test()
+    big_query_package_by_month_test()
     print('{}'.format('-' * 20))
     return

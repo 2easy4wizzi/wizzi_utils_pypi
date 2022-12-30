@@ -5,6 +5,7 @@ import psutil
 from uuid import getnode as _get_mac_uuid
 from urllib.request import urlretrieve, urlopen
 from urllib.error import URLError
+from datetime import datetime
 from wizzi_utils.misc import misc_tools as mt
 
 
@@ -539,3 +540,104 @@ def get_mac_address_uuid(with_colons: bool = True, ack: bool = False, tabs: int 
         mac = ''
         mt.exception_error(e, real_exception=True)
     return mac
+
+
+# noinspection PyUnresolvedReferences,PyPackageRequirements
+def runQ(query: str, ack_q: bool = True, ack_out: bool = True):  # -> pd.core.frame.DataFrame:
+    """
+    based on https://cloud.google.com/bigquery/docs/reference/libraries#client-libraries-install-python
+    bigQ test online: https://console.cloud.google.com/bigquery
+    bigQ generate new key: https://console.cloud.google.com/projectselector2/iam-admin/serviceaccounts
+        service and project name > keys > add key > download
+    bigQ table keys https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/
+    dependencies
+    # pip install google # maybe
+    # pip install --upgrade google-cloud-speech # maybe
+    pip install pandas
+    pip install google-cloud-bigquery
+    pip install db-dtypes (on administrative mode)
+
+    important: assumes you have credentials file on env variable GOOGLE_APPLICATION_CREDENTIALS
+    see big_query_package_by_month_test() to see how do insert dynamically
+    """
+    from google.cloud import bigquery
+    if ack_q:
+        print(query)
+
+    client = bigquery.Client()  # Construct a BigQuery client object.
+    q_out = client.query(query).to_dataframe()  # Make an API request.
+
+    if ack_out:
+        print(q_out)  # as table
+    return q_out
+
+
+# noinspection PyPackageRequirements
+def big_query_package_by_month(package_name: str = 'wizzi-utils', months_back: int = 12, only_pip: bool = True):
+    """
+    querying bigQuery `months_back` on a `package_name`
+    bigQuery free usage allows only 1 month diff - so, instead iteratively query 1 month a time and collect result
+    :param package_name: e.g. numpy
+    :param months_back: how many month back from today
+    :param only_pip: if True: only downloads from using pip install. False: all downloads (via bandersnatch)
+    :return:
+    e.g. output:
+
+        querying last 3 months on package numpy (only_pip True):
+        results:
+            pip_reqs       month
+        0  123265129  2022-12-01
+        1  126006551  2022-11-01
+        2  129894573  2022-10-01
+
+        querying last 3 months on package numpy (only_pip False):
+        results:
+                hits       month
+        0  129585368  2022-12-01
+        1  134565898  2022-11-01
+        2  139379190  2022-10-01
+        queries time: 0:00:36
+    """
+    import pandas as pd
+    table = 'bigquery-public-data.pypi.file_downloads'
+    hits_col_name = 'pip_reqs' if only_pip else 'hits'
+    pip_exp = "details.installer.name = 'pip'" if only_pip else "TRUE"
+
+    q_by_months_base = """
+                   SELECT
+                       COUNT(*) AS {},
+                       DATE_TRUNC(DATE(timestamp), MONTH) AS `month`
+                   FROM `{}`
+                   WHERE
+                       file.project = '{}'
+                       AND {}
+                       AND DATE(timestamp)
+                           BETWEEN {}
+                           AND {}
+                   GROUP BY `month`
+                   ORDER BY `month` DESC
+               """
+    frames = []  # saving each dataframe
+    print('querying last {} months on package {} (only_pip {}):'.format(months_back, package_name, only_pip))
+    t_all = mt.get_timer()
+    for i in range(months_back):
+        # t = mt.get_timer()
+        date_end = """
+                DATE_SUB(
+                    DATE_TRUNC(
+                        DATE_ADD(
+                            DATE_SUB(CURRENT_DATE(), INTERVAL {} MONTH),
+                        INTERVAL 1 MONTH),
+                    MONTH), 
+                INTERVAL 1 DAY)
+                """.format(i)
+        date_start = 'DATE_TRUNC(DATE_SUB(CURRENT_DATE(), INTERVAL {} MONTH), MONTH)'.format(i)
+        q_by_months = q_by_months_base.format(hits_col_name, table, package_name, pip_exp, date_start, date_end)
+        df = runQ(query=q_by_months, ack_q=False, ack_out=False)
+        frames.append(df)
+        # print('\tquery {} done. time passed {}'.format(i + 1, mt.get_timer_delta(s_timer=t)))
+    print('results:')
+    df_all = pd.concat(frames, ignore_index=True)
+    print(df_all)
+    print('queries time: {}'.format(mt.get_timer_delta(s_timer=t_all)))
+    return
