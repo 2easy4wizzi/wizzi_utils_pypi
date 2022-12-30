@@ -1887,7 +1887,12 @@ def cpu_info(one_liner: bool = False, tabs: int = 1):
 
 def wizzi_utils_requirements():
     print('A snapshot of my environment packages:')
-    req_file = '{}/resources/wizzi_utils_requirements.txt'.format(get_repo_root(repo_name='wizzi_utils_pypi'))
+
+    misc_file = get_file_name(depth=1)
+    misc_dir = os.path.dirname(misc_file)
+    main_src_dir = '{}/../'.format(misc_dir)
+
+    req_file = '{}/wizzi_utils_requirements.txt'.format(main_src_dir)
     _ = read_file_lines(fp=req_file, ack=True)
     return
 
