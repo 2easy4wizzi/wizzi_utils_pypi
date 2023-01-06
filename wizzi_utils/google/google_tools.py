@@ -1,5 +1,6 @@
 from wizzi_utils.misc import misc_tools as mt
 import os
+import json
 # noinspection PyPackageRequirements
 import yaml
 # noinspection PyPackageRequirements
@@ -12,6 +13,8 @@ from pydrive.drive import GoogleDrive
 from pydrive.files import GoogleDriveFile
 # noinspection PyPackageRequirements
 from pydrive.settings import InvalidConfigError
+# noinspection PyPackageRequirements
+import requests
 
 
 def read_yaml_to_dict(yaml_path: str) -> dict:
@@ -28,7 +31,7 @@ def read_yaml_to_dict(yaml_path: str) -> dict:
     return yaml_d
 
 
-class google_handler:
+class GDriveHandler:
     """
     Before starting - know i made an assumption that a file/dir name is unique.
     From some reason, google allow same file or dir name in the same dir. e.g. 'root/a.txt' twice
@@ -43,12 +46,16 @@ class google_handler:
      HOST:
          1 https://console.cloud.google.com/
          2 Dashboard - create project
-         3 enter project - enable Api and services - type google drive and enable
-         4 CREATE CREDENTIALS - client id - desktop app and download the dot json file -
-            can rename to client_secret.json
+         3 enter project -
+         4 type in search "enable Api and services" and click
+         5 find google drive API below in the list and click. up in the tool bar click enable api
+         4 on the left(in the same place) click CREDENTIALS - client id -
+            desktop app and download the dot json file. you can rename to client_secret.json
+            this file will be the "client_config_file" in your settings.yaml file
      CLIENT:
          1 HOST must add CLIENT (including himself):
-             in OAuth consent screen: +Add users, under test users, add user email
+            in the same screen as step 4 from HOST, click under CREDENTIALS on "OAuth consent screen"
+             +Add users, under test users, add user email (that will be logging from the python)
          2 pip install pydrive
              see more at https://pythonhosted.org/PyDrive/
          3 create dir for the client connection e.g. GDrive2
@@ -58,10 +65,10 @@ class google_handler:
                  client_config_file: ./GDrive2/client_secret.json
                  save_credentials: True
                  save_credentials_backend: file
-                 save_credentials_file: ./GDrive2/credentials.json
+                 save_credentials_file: ./GDrive2/credentials.json  # this file doesn't exist till first run and login
                  oauth_scope: ['https://www.googleapis.com/auth/drive']
          4 on first run - it will open a browser and ask to enter user and pass. user must be added on CLIENT step 1
-             after first run credentials will be created in the path stated on the settings.yaml save_credentials_file
+             after first run CREDENTIALS will be created in the path stated on the settings.yaml "save_credentials_file"
              no more login required
     """
 
@@ -572,3 +579,17 @@ class google_handler:
                 self.__refresh_all_files_list()
 
         return success
+
+    def get_sharable_link(self, dst_full_path_on_drive) -> str:
+        link = None
+        file = self.__get_file(dst_full_path_on_drive)
+        if file is not None:
+            access_token = self.gauth.credentials.access_token
+            file_id = file['id']
+            url = 'https://www.googleapis.com/drive/v3/files/{}/permissions?supportsAllDrives=true'.format(file_id)
+            headers = {'Authorization': 'Bearer {}'.format(access_token), 'Content-Type': 'application/json'}
+            payload = {'type': 'anyone', 'value': 'anyone', 'role': 'reader'}
+            res = requests.post(url, data=json.dumps(payload), headers=headers)
+            if res.status_code == 200:  # success
+                link = file['alternateLink']
+        return link

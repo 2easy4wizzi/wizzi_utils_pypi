@@ -460,7 +460,7 @@ def version() -> str:
     :return:
     """
     # v = pkg_resources.require("wizzi_utils")[0].version
-    v = '7.2.3'
+    v = '8.0.1'
     return v
 
 

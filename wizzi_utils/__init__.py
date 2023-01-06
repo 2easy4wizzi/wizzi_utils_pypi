@@ -9,7 +9,7 @@ silence_cv_warn()
 __version__ = version()
 
 # extra packages - available with extra namespace - requires extra modules
-# from wizzi_utils import google as got  # noqa: E402
+from wizzi_utils import google as got  # noqa: E402
 from wizzi_utils import json as jt  # noqa: E402
 from wizzi_utils import open_cv as cvt  # noqa: E402
 from wizzi_utils import pyplot as pyplt  # noqa: E402

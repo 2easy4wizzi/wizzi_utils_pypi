@@ -7,6 +7,7 @@ def main():
     # TODO 3 why req file not appears at user side
     # TODO 4 check warning in reqs: update to safe reqs
     #           update req txt
+    wu.got.test.get_link_test()
     # wu.test_all_modules()
     # wu.test.generate_requirements_file_test(real_req=True)
     # wu.wizzi_utils_requirements()

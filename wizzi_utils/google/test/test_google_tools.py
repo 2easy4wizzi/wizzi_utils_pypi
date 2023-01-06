@@ -5,8 +5,8 @@ from wizzi_utils.socket import socket_tools as st
 import os
 
 
-def build_gh() -> got.google_handler:
-    gh = got.google_handler(
+def build_gh() -> got.GDriveHandler:
+    gh = got.GDriveHandler(
         yaml_path='./GDrive2/settings.yaml',
         tabs=1,
         dir_color='reverse',
@@ -18,14 +18,14 @@ def build_gh() -> got.google_handler:
     return gh
 
 
-def create_test_dir(gh: got.google_handler) -> str:
+def create_test_dir(gh: got.GDriveHandler) -> str:
     print('Creating dir for testing:')
     new_dir_path = 'root/{}'.format(os.path.basename(mtt.PLAY_GROUND))  # new dir
     gh.create_dir(dst_full_path_on_drive=new_dir_path)
     return new_dir_path
 
 
-def delete_test_dir(gh: got.google_handler, test_f: str) -> None:
+def delete_test_dir(gh: got.GDriveHandler, test_f: str) -> None:
     # delete dir for tests
     print('Deleting dir for testing:')
     gh.delete_empty_dir(full_path_on_drive=test_f)
@@ -33,7 +33,7 @@ def delete_test_dir(gh: got.google_handler, test_f: str) -> None:
     return
 
 
-def list_all_files_test(gh: got.google_handler = None, test_f: str = None):
+def list_all_files_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -48,7 +48,7 @@ def list_all_files_test(gh: got.google_handler = None, test_f: str = None):
     return
 
 
-def upload_delete_image_test(gh: got.google_handler = None, test_f: str = None):
+def upload_delete_image_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -69,7 +69,7 @@ def upload_delete_image_test(gh: got.google_handler = None, test_f: str = None):
     return
 
 
-def upload_download_delete_file_test(gh: got.google_handler = None, test_f: str = None):
+def upload_download_delete_file_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -94,7 +94,7 @@ def upload_download_delete_file_test(gh: got.google_handler = None, test_f: str 
     return
 
 
-def upload_read_download_delete_test(gh: got.google_handler = None, test_f: str = None):
+def upload_read_download_delete_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -123,7 +123,7 @@ def upload_read_download_delete_test(gh: got.google_handler = None, test_f: str 
     return
 
 
-def create_and_delete_empty_dir_test(gh: got.google_handler = None, test_f: str = None):
+def create_and_delete_empty_dir_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -138,7 +138,7 @@ def create_and_delete_empty_dir_test(gh: got.google_handler = None, test_f: str 
     return
 
 
-def create_and_delete_dir_with_files_test(gh: got.google_handler = None, test_f: str = None):
+def create_and_delete_dir_with_files_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -156,7 +156,7 @@ def create_and_delete_dir_with_files_test(gh: got.google_handler = None, test_f:
     return
 
 
-def download_dir_test(gh: got.google_handler = None, test_f: str = None):
+def download_dir_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -189,7 +189,7 @@ def download_dir_test(gh: got.google_handler = None, test_f: str = None):
     return
 
 
-def upload_dir_test(gh: got.google_handler = None, test_f: str = None):
+def upload_dir_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -213,7 +213,7 @@ def upload_dir_test(gh: got.google_handler = None, test_f: str = None):
     return
 
 
-def rename_file_test(gh: got.google_handler = None, test_f: str = None):
+def rename_file_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -238,7 +238,7 @@ def rename_file_test(gh: got.google_handler = None, test_f: str = None):
     return
 
 
-def update_file_content_test(gh: got.google_handler = None, test_f: str = None):
+def update_file_content_test(gh: got.GDriveHandler = None, test_f: str = None):
     mt.get_function_name(ack=True, tabs=0)
     local_test = False
     if gh is None:
@@ -253,6 +253,28 @@ def update_file_content_test(gh: got.google_handler = None, test_f: str = None):
     new_content = gh.read_file(new_file_dst)
     print(new_content)
     gh.delete_file(full_path_on_drive=new_file_dst)
+    if local_test:
+        delete_test_dir(gh, test_f)
+    return
+
+
+def get_link_test(gh: got.GDriveHandler = None, test_f: str = None):
+    mt.get_function_name(ack=True, tabs=0)
+    local_test = False
+    if gh is None:
+        gh = build_gh()
+        test_f = create_test_dir(gh)
+        local_test = True
+
+    src_path = '{}/{}'.format(mtt.TEMP_FOLDER1, mtt.DEMO_FILE)
+    mtt.create_demo_file(src_path)
+    dst_full_path_on_drive = '{}/{}'.format(test_f, mtt.DEMO_FILE)  # new file
+    gh.upload_file(dst_full_path_on_drive=dst_full_path_on_drive, local_file_path=src_path)
+    link = gh.get_sharable_link(dst_full_path_on_drive=dst_full_path_on_drive)
+    print('link to file {}'.format(link))
+    print('**** cancel the gh.delete_file to check the link is working ****')
+    mt.delete_file(src_path)
+    gh.delete_file(full_path_on_drive=dst_full_path_on_drive)
     if local_test:
         delete_test_dir(gh, test_f)
     return
@@ -274,6 +296,7 @@ def test_all():
     upload_dir_test(gh, test_f=new_dir_path)
     rename_file_test(gh, test_f=new_dir_path)
     update_file_content_test(gh, test_f=new_dir_path)
+    get_link_test(gh, test_f=new_dir_path)
 
     delete_test_dir(gh, new_dir_path)
     print('{}'.format('-' * 20))

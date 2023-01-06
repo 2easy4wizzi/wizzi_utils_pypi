@@ -19,8 +19,8 @@ setup(
         'wizzi_utils',  # package name
         'wizzi_utils/misc',  # main sub package
         'wizzi_utils/misc/test',
-        # 'wizzi_utils/google',
-        # 'wizzi_utils/google/test',
+        'wizzi_utils/google',
+        'wizzi_utils/google/test',
         'wizzi_utils/json',
         'wizzi_utils/json/test',
         'wizzi_utils/open_cv',
