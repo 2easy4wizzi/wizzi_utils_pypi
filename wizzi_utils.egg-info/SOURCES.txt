@@ -9,6 +9,10 @@ wizzi_utils.egg-info/SOURCES.txt
 wizzi_utils.egg-info/dependency_links.txt
 wizzi_utils.egg-info/requires.txt
 wizzi_utils.egg-info/top_level.txt
+wizzi_utils/google/__init__.py
+wizzi_utils/google/google_tools.py
+wizzi_utils/google/test/__init__.py
+wizzi_utils/google/test/test_google_tools.py
 wizzi_utils/json/__init__.py
 wizzi_utils/json/json_tools.py
 wizzi_utils/json/test/__init__.py

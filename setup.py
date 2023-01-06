@@ -40,7 +40,7 @@ setup(
         'wizzi_utils/models/tflite_models',
         'wizzi_utils/models/test',
     ],
-    version='8.0.1',
+    version='8.0.2',
     license='MIT',  # https://help.github.com/articles/licensing-a-repository
     description='Debugging tools and fast coding',
     long_description=long_description,
@@ -48,7 +48,7 @@ setup(
     author='Gilad Eini',
     author_email='giladEini@gmail.com',
     url='https://github.com/2easy4wizzi/wizzi_utils_pypi',  # link to github
-    download_url='https://github.com/2easy4wizzi/wizzi_utils_pypi/archive/refs/tags/v_8.0.1.tar.gz',
+    download_url='https://github.com/2easy4wizzi/wizzi_utils_pypi/archive/refs/tags/v_8.0.2.tar.gz',
     keywords=[  # Keywords that define your package best
         'debugging tools',
         'json',

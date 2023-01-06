@@ -1,4 +1,6 @@
 wizzi_utils
+wizzi_utils/google
+wizzi_utils/google/test
 wizzi_utils/json
 wizzi_utils/json/test
 wizzi_utils/misc
