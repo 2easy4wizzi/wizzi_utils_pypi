@@ -687,7 +687,7 @@ def get_frames_from_cap_cv2(cap: cv2.VideoCapture) -> int:
     """
     video_total_frames = None
     if cap.isOpened():
-        video_total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
+        video_total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     return video_total_frames
 
 
@@ -696,7 +696,7 @@ def get_frames_from_cap_imutils(cap) -> int:
     :param cap:
     :return:
     """
-    video_total_frames = int(cap.stream.get(cv2.CAP_PROP_FRAME_COUNT)) - 1
+    video_total_frames = int(cap.stream.get(cv2.CAP_PROP_FRAME_COUNT))
     return video_total_frames
 
 
