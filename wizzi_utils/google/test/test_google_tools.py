@@ -6,8 +6,10 @@ import os
 
 
 def build_gh() -> got.GDriveHandler:
+    # set env variable to the dir containing the settings.yaml file
+    gdrive_secrets_dir = mt.get_env_variable(key='GDRIVE_DIR')
     gh = got.GDriveHandler(
-        yaml_path='./GDrive2/settings.yaml',
+        yaml_path='{}/settings.yaml'.format(gdrive_secrets_dir),
         tabs=1,
         dir_color='reverse',
         file_color='light_blue',

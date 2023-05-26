@@ -14,10 +14,10 @@ from wizzi_utils.models.test.shared_code_for_tests import od_or_pd_Model_cam_tes
 def __get_pd_dict(op: int = 1):
     if op == 1:
         pd_solo = {
-            'model_names': ['pose_landmark_lite'],
+            # 'model_names': ['pose_landmark_lite'],
             # 'model_names': ['pose_landmark_full'],
             # 'model_names': ['pose_landmark_heavy'],
-            # 'model_names': ['posenet'],
+            'model_names': ['posenet'],
             'dis_size': (640, 480),
             'grid': (1, 1),
         }

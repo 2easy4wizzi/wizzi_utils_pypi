@@ -49,7 +49,7 @@ class GDriveHandler:
          3 enter project -
          4 type in search "enable Api and services" and click
          5 find google drive API below in the list and click. up in the tool bar click enable api
-         4 on the left(in the same place) click CREDENTIALS - client id -
+         6 on the left(in the same place) click CREDENTIALS - client id -
             desktop app and download the dot json file. you can rename to client_secret.json
             this file will be the "client_config_file" in your settings.yaml file
      CLIENT:

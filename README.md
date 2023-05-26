@@ -1,7 +1,7 @@
-# Package wizzi utils:
+# Package [wizzi utils](https://github.com/2easy4wizzi/wizzi_utils_pypi/tree/main):
 
-![main wrapper img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/2easy4wizzi.jpeg?raw=true)
-<!--- <img src="https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/2easy4wizzi.jpeg?raw=true" width="155" height="90" /> -->
+![main wrapper img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/2easy4wizzi.jpeg)
+
 ## Brief
 
 * "wizzi_utils" main usage is for debugging and fast coding.
@@ -25,7 +25,7 @@ wu.test.to_str_test()  # for a wide example of to_str function
 print(wu.tt.to_str(var=3, title='my_int'))  # tt for torch tools. will work if torch installed
 wu.tt.test.to_str_test()  # for a wide example of tt.to_str function
 # If facing packages issues and want to know what packages I used, call the following
-wu.wizzi_utils_requirements()  # updated on 10/10/2022 
+wu.download_wizzi_utils_env_snapshot()  # updated on 10/10/2022 
 ```
 
 ### list of all the packages
@@ -81,8 +81,7 @@ if __name__ == '__main__':
     )
 ```
 
-<!--- ![main wrapper img](resources/readme_images/main_wrapper.PNG) -->
-![main wrapper img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/main_wrapper.PNG?raw=true)
+![main wrapper img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/main_wrapper.PNG?raw=true)
 
 ```python
 import wizzi_utils as wu
@@ -102,8 +101,7 @@ for t in range(10):
 fps.finalize()
 ```
 
-<!--- ![fps img](resources/readme_images/fps.PNG) -->
-![fps img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/fps.PNG?raw=true)
+![fps img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/fps.PNG?raw=true)
 
 ```python
 import wizzi_utils as wu
@@ -136,8 +134,7 @@ wu.cvt.display_open_cv_images(
 )
 ```
 
-<!--- ![display images img](resources/readme_images/display_images.PNG) -->
-![display images img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/display_images.PNG?raw=true)
+![display images img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/display_images.PNG?raw=true)
 
 ```python
 import wizzi_utils as wu
@@ -155,9 +152,9 @@ wu.models.test.test_cv2_tracking_models()
 <!--- ![object detection img](resources/readme_images/yolov4.PNG) -->
 <!--- ![pose estimation img](resources/readme_images/pose.PNG) -->
 <!--- ![tracking img](resources/readme_images/tracking.PNG) -->
-![object detection img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/yolov4.PNG?raw=true)
-![pose estimation img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/pose.PNG?raw=true)
-![tracking img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/tracking.PNG?raw=true)
+![object detection img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/yolov4.PNG?raw=true)
+![pose estimation img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/pose.PNG?raw=true)
+![tracking img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/tracking.PNG?raw=true)
 
 ```python
 import wizzi_utils as wu
@@ -166,6 +163,5 @@ import wizzi_utils as wu
 wu.tts.test.run_machine_buddy_gui_test()
 ```
 
-<!--- ![tts img](resources/readme_images/tts.PNG) -->
-![tts img](https://github.com/2easy4wizzi/2easy4wizzi.github.io/blob/master/images_wu/tts.PNG?raw=true)
+![tts img](https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi/main/resources/readme_images/tts.PNG?raw=true)
 

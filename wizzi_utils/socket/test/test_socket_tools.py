@@ -306,18 +306,15 @@ def big_query_package_by_month_test():
     """
 
     mt.get_function_name(ack=True, tabs=0)
-
-    cred_file = '{}/secret_keys/credentialsBigQ.json'.format(mt.get_repo_root(repo_name='wizzi_utils'))
-    if not os.path.exists(cred_file):
-        mt.exception_error(e='credentials file not found {}'.format(os.path.abspath(cred_file)))
+    # don't forget to set GOOGLE_APPLICATION_CREDENTIALS to your big query cred_file
+    # see instruction how to generate on st.runQ() function documentation
+    cred_file = mt.get_env_variable(key='GOOGLE_APPLICATION_CREDENTIALS')
+    if cred_file is None or not os.path.isfile(cred_file):
+        err = 'GOOGLE_APPLICATION_CREDENTIALS env variable not found or file not exists'
+        mt.exception_error(e=err)
         return
 
-    mt.set_env_variable(
-        key='GOOGLE_APPLICATION_CREDENTIALS',
-        val=cred_file,
-        ack=True
-    )
-    months_from_wu_release = 3
+    months_from_wu_release = 2
     # def diff_month(d1: datetime, d2: datetime) -> int:
     #     return (d1.year - d2.year) * 12 + d1.month - d2.month
     # WU_PUBLISH_DATE = datetime(year=2021, month=2, day=22)

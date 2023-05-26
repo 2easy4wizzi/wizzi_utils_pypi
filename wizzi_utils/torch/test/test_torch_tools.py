@@ -7,7 +7,7 @@ import torch
 # noinspection PyPackageRequirements
 import torch.nn as nn
 # noinspection PyPackageRequirements
-import torch.nn.functional as F
+import torch.nn.functional as func
 
 
 def cuda_on_test():
@@ -325,10 +325,10 @@ def get_torch_version_test():
     return
 
 
-class Mnist_example(nn.Module):
+class MnistExample(nn.Module):
     # noinspection PyTypeChecker
     def __init__(self):
-        super(Mnist_example, self).__init__()
+        super(MnistExample, self).__init__()
         self.conv1 = nn.Conv2d(1, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
         self.dropout1 = nn.Dropout(0.25)
@@ -338,29 +338,29 @@ class Mnist_example(nn.Module):
 
     def forward(self, x):
         x = self.conv1(x)
-        x = F.relu(x)
+        x = func.relu(x)
         x = self.conv2(x)
-        x = F.relu(x)
-        x = F.max_pool2d(x, 2)
+        x = func.relu(x)
+        x = func.max_pool2d(x, 2)
         x = self.dropout1(x)
         x = torch.flatten(x, 1)
         x = self.fc1(x)
-        x = F.relu(x)
+        x = func.relu(x)
         x = self.dropout2(x)
         x = self.fc2(x)
-        output = F.log_softmax(x, dim=1)
+        output = func.log_softmax(x, dim=1)
         return output
 
 
 def save_load_model_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     tt.layer_info(net1, layer='conv1', title='net1 conv1 values', wv=True, tabs=1)
     mt.create_dir(mtt.TEMP_FOLDER1)
     path = '{}/{}.pt'.format(mtt.TEMP_FOLDER1, mtt.JUST_A_NAME)
     tt.save_model(net1, path=path)
 
-    net2 = Mnist_example()
+    net2 = MnistExample()
     if tt.cuda_on():
         net2 = net2.cuda()
 
@@ -373,42 +373,42 @@ def save_load_model_test():
 
 def model_info_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     tt.model_info(net1, 'Mnist model', wv=True, tabs=1)
     return
 
 
 def layer_info_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     tt.layer_info(net1, layer='conv2', wv=True, tabs=1)
     return
 
 
 def model_summary_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example().float()  # if cuda_on(): model_summary need float variables
+    net1 = MnistExample().float()  # if cuda_on(): model_summary need float variables
     tt.model_summary(net1, input_size=(1, 28, 28), batch_size=256)
     return
 
 
 def model_params_count_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     print('\ttotal params {:,}'.format(tt.model_params_count(net1)))
     return
 
 
 def model_status_str_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     print('\tstatus = {}'.format(tt.model_status_str(net1)))
     return
 
 
 def set_model_status_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     print('\tstatus = {}'.format(tt.model_status_str(net1)))
     tt.set_model_status(net1, status=False)
     print('\tstatus = {}'.format(tt.model_status_str(net1)))
@@ -419,7 +419,7 @@ def set_model_status_test():
 
 def set_layer_status_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     tt.layer_info(net1, layer='conv2', title='net2')
     tt.set_layer_status(net1, layers=['conv2'], status=False)
     tt.model_info(net1, title='net2(post freezing conv2)')
@@ -428,7 +428,7 @@ def set_layer_status_test():
 
 def model_clone_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
+    net1 = MnistExample()
     print('\tnet1 address {}'.format(hex(id(net1))))
     net2 = tt.model_clone(net1)
     print('\tnet2 address {}'.format(hex(id(net2))))
@@ -437,8 +437,8 @@ def model_clone_test():
 
 def model_copy_layers_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
-    net2 = Mnist_example()
+    net1 = MnistExample()
+    net2 = MnistExample()
     tt.model_info(net1, title='net1', wv=True, tabs=1)
     tt.model_info(net2, title='net2', wv=True, tabs=1)
     tt.model_copy_layers(net1, net2, layers=['conv1'])
@@ -448,8 +448,8 @@ def model_copy_layers_test():
 
 def model_copy_except_layers_test():
     mt.get_function_name(ack=True, tabs=0)
-    net1 = Mnist_example()
-    net2 = Mnist_example()
+    net1 = MnistExample()
+    net2 = MnistExample()
     tt.model_info(net1, title='net1', wv=True, tabs=1)
     tt.model_info(net2, title='net2', wv=True, tabs=1)
     tt.model_copy_except_layers(net1, net2, layers=['conv1'])

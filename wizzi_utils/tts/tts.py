@@ -430,7 +430,8 @@ try:
                 self.machine_buddy.say(text=common_say)
             return
 
-        def keyPressEvent(self, event: QtGui.QKeyEvent):
+        @staticmethod
+        def keyPressEvent(event: QtGui.QKeyEvent):
             if event.key() in [QtCore.Qt.Key_Escape]:
                 print('keyPressEvent(): Qt plot: Esc was clicked. Terminating...')
                 MachineBuddyGui.get_qt_app().quit()

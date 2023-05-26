@@ -8,6 +8,10 @@ import os
 from collections import OrderedDict
 # noinspection PyPackageRequirements
 import cv2
+import ssl
+
+# noinspection PyProtectedMember
+ssl._create_default_https_context = ssl._create_unverified_context
 
 LOOP_TESTS = 50
 BLOCK_MS_NORMAL = 2000  # 0 to block
@@ -582,12 +586,12 @@ def video_creator_size_test():
     wu.get_function_name(ack=True, tabs=0)
 
     # NOTICE MKV FIX ON WINDOWS on python 3.8
-    # download the file below to any dir. let DIR be its path
+    # download the file below to any dir. let DIR be its path. set env var MKV_DLL_DIR=DIR
     # https://github.com/2easy4wizzi/wizzi_utils_pypi/raw/main/resources/openh264-1.8.0-win64.dll
-    # uncomment the following:
-    # if wu.is_windows():
-    #     adding this folder - contains dll for h264 for python 3.8
-    #     wu.add_resource_folder_to_path(resources_dir=DIR)
+    MKV_DLL_DIR = wu.get_env_variable(key='MKV_DLL_DIR')
+    if MKV_DLL_DIR is not None and os.path.isdir(MKV_DLL_DIR) and wu.is_windows():
+        # adding this folder - contains dll for h264 for python 3.8
+        wu.add_resource_folder_to_path(resources_dir=MKV_DLL_DIR)
 
     # now open video file
     vid_name = mtt.DOG1

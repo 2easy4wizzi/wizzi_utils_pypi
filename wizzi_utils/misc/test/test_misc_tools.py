@@ -1061,8 +1061,8 @@ def get_path_file_system_info_test():
 
 def get_repo_root_test():
     mt.get_function_name_and_line(ack=True, tabs=0)
-    mt.get_repo_root(repo_name='NO_REPO', ack=True)
-    mt.get_repo_root(repo_name='wizzi_utils_pypi', ack=True)
+    ret = mt.get_repo_root(repo_name='wizzi_utils_pypi', ack=True)  # will return 'N/A' outside wizzi utils repo
+    print('\t{}'.format(ret))
     return
 
 

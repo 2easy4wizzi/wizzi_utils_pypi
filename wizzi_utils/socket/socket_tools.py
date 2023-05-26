@@ -551,8 +551,7 @@ def runQ(query: str, ack_q: bool = True, ack_out: bool = True):  # -> pd.core.fr
         service and project name > keys > add key > download
     bigQ table keys https://packaging.python.org/en/latest/guides/analyzing-pypi-package-downloads/
     dependencies
-    # pip install google # maybe
-    # pip install --upgrade google-cloud-speech # maybe
+    pip install google
     pip install pandas
     pip install google-cloud-bigquery
     pip install db-dtypes (on administrative mode)

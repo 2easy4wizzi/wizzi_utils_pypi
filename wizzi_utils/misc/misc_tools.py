@@ -27,6 +27,8 @@ import subprocess
 import pkg_resources
 from enum import Enum
 
+import wizzi_utils
+
 LINES = '-' * 80
 NOT_FOUND = '{} Not found'
 CREATED = '{} Created'
@@ -265,6 +267,28 @@ def get_cudnn_version(cudnn_path: str) -> str:
     return cudnn_v
 
 
+def extract_cuda_version_linux(cuda_path: str) -> str:
+    cuda_v = None
+
+    if os.path.isfile('{}/version.txt'.format(cuda_path)):
+        cuda_v_file = '{}/version.txt'.format(cuda_path)
+        f_obj = open(cuda_v_file, 'r')
+        for line in f_obj:
+            ls = line.strip()
+            if ls.startswith('CUDA Version'):
+                ls_spl = ls.split(' ')
+                if len(ls_spl) == 3:
+                    cuda_v = line.strip().split(' ')[2]
+                    break
+    elif os.path.isfile('{}/version.json'.format(cuda_path)):
+        import json
+        cuda_v_file = '{}/version.json'.format(cuda_path)
+        j_obj = json.load(fp=open(cuda_v_file))
+        cuda_v = j_obj['cuda']['version']
+
+    return cuda_v
+
+
 def get_cuda_version(ack: bool = False, tabs: int = 1) -> str:
     """
     :param ack:
@@ -272,50 +296,82 @@ def get_cuda_version(ack: bool = False, tabs: int = 1) -> str:
     :return: cuda version if found on environment variables
     see get_cuda_version_test()
     """
-    cuda_v = None
-    cudnn_v = None
+    cuda_str = add_color('* No CUDA found', ops=FAIL_C)
+    try:
+        cuda_path, cuda_v, cudnn_v = None, None, None
+        if is_windows():
+            # e.g. C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v10.2
+            cuda_path = get_env_variable(key='CUDA_PATH')
+            if cuda_path is not None and os.path.isdir(cuda_path):
+                cuda_v = os.path.basename(cuda_path)  # version taken from dir name
+                cudnn_path = '{}/include/cudnn_version.h'.format(cuda_path)
+                if os.path.isfile(cudnn_path):
+                    cudnn_v = get_cudnn_version(cudnn_path=cudnn_path)
 
-    if is_windows():
-        cuda_path = get_env_variable(key='CUDA_PATH')
-        if cuda_path is not None:
-            cuda_v = os.path.basename(cuda_path)
+        elif is_linux():
+            # try to locate cuda version file
+            known_options = [
+                '/usr/local/cuda',
+            ]
+
+            # e.g. /usr/local/cuda-11.7 or /usr/local/cuda
+            cuda_path = get_env_variable(key='CUDA_ROOT')  # first try with env variable
+            if cuda_path is None or not os.path.isdir(cuda_path):
+                for option in known_options:  # second try known paths
+                    if os.path.isdir(option):
+                        cuda_path = option
+                        break  # found cuda dir
+
+            if cuda_path is not None and os.path.isdir(cuda_path):  # if we have the cuda dir
+                cuda_v = extract_cuda_version_linux(cuda_path)
+
+        # windows and linux
+        if cuda_v is not None and cuda_path is not None:
+            # first attempt
             cudnn_v = get_cudnn_version(cudnn_path='{}/include/cudnn.h'.format(cuda_path))
 
-    elif is_linux():
-        cuda_path = get_env_variable(key='CUDA_ROOT')
-        cuda_v_file = '{}/version.txt'.format(cuda_path)
-        if os.path.exists(cuda_v_file):
-            f_obj = open(cuda_v_file, 'r')
-            for line in f_obj:
-                ls = line.strip()
-                if ls.startswith('CUDA Version'):
-                    ls_spl = ls.split(' ')
-                    if len(ls_spl) == 3:
-                        cuda_v = line.strip().split(' ')[2]
-                        break
-        if cuda_v is not None:
-            cudnn_path = '{}/include/cudnn.h'.format(cuda_path)
-            if is_jetson_nano():  # cudnn location on jetson_nano
-                cudnn_path = '/usr/include/aarch64-linux-gnu/cudnn_version_v8.h'
-            cudnn_v = get_cudnn_version(cudnn_path=cudnn_path)
-            if cudnn_v is None:  # TRY via env variable
+            # second attempt
+            if cudnn_v is None:
+                cudnn_v = get_cudnn_version(cudnn_path='{}/include/cudnn_version.h'.format(cuda_path))
+
+            # third - env variable
+            if cudnn_v is None:
                 cudnn_path = get_env_variable(key='CUDNN_FILE_PATH')
                 if cudnn_path is not None:
                     cudnn_v = get_cudnn_version(cudnn_path=cudnn_path)
 
-    if cuda_v is None:
-        cuda_v = add_color('* No CUDA_PATH found', ops=FAIL_C)
-    else:
-        cuda_v = '{}* CUDA Version: {}'.format(tabs * '\t', cuda_v)
-        if cudnn_v is not None:
-            cuda_v += ' (cuDNN Version {})'.format(cudnn_v)
-        else:
-            cuda_v += ' (No cuDNN found)'
-        cuda_v = add_color(cuda_v, ops=SUCCESS_C)
+        if cuda_v is not None:
+            cuda_str = '{}* CUDA Version: {}'.format(tabs * '\t', cuda_v)
+            if cudnn_v is not None:
+                cuda_str += ' (cuDNN Version {})'.format(cudnn_v)
+            else:
+                cuda_str += ' (No cuDNN found)'
+            cuda_str = add_color(cuda_str, ops=SUCCESS_C)
 
-    if ack:
-        print(cuda_v)
-    return cuda_v
+        if ack:
+            print(cuda_str)
+    except Exception:
+        pass
+    return cuda_str
+
+
+def get_nvidia_gpus() -> str:
+    try:
+        cmd = 'nvidia-smi --query-gpu=gpu_name,memory.total --format=csv,noheader'
+        gpu_str_lines = run_shell_command_and_get_out(cmd=cmd, ack_cmd=False)
+        # gpu_str_lines = ['Quadro RTX 4000, 8192 Mib', 'Quadro RTX 4000, 8192 Mib']
+
+        gpu_str_all = ''
+        for i, gpu_str in enumerate(gpu_str_lines):
+            gpu_name, gpu_size = gpu_str.split(', ')
+            gpu_str_all += '[device {}] {} ({})'.format(i, gpu_name, gpu_size)
+            if i + 1 < len(gpu_str_lines):
+                gpu_str_all += ', '
+
+        gpu_str_all = add_color(f'* Nvidia GPUs: {gpu_str_all}', ops=SUCCESS_C)
+    except Exception:
+        gpu_str_all = add_color('* Nvidia GPUs: (Nvidia-smi not available)', ops=FAIL_C)
+    return gpu_str_all
 
 
 def get_env_variables(ack: bool = False, tabs: int = 1) -> dict:
@@ -564,6 +620,7 @@ def main_wrapper(
         seed: int = -1,
         ipv4: bool = False,
         cuda_off: bool = False,
+        nvid_gpu: bool = True,
         torch_v: bool = False,
         tf_v: bool = False,
         cv2_v: bool = False,
@@ -575,6 +632,7 @@ def main_wrapper(
     :param seed: if -1 no seed, else set_seed(seed=seed)
     :param ipv4: print computer ipv4
     :param cuda_off: make gpu invisible and force run on cpu
+    :param nvid_gpu: info on nvidia gpus. uses nvidia-smi
     :param torch_v: print torch version
     :param tf_v: print tensorflow lite version
     :param cv2_v: print opencv version
@@ -626,6 +684,10 @@ def main_wrapper(
         make_cuda_invisible()
         cuda_msg += ' (Turned off)'
     print(cuda_msg)
+
+    if nvid_gpu:
+        nvidia_gpus_info = get_nvidia_gpus()
+        print(nvidia_gpus_info)
 
     if torch_v:
         try:
@@ -1885,18 +1947,6 @@ def cpu_info(one_liner: bool = False, tabs: int = 1):
     return string
 
 
-def wizzi_utils_requirements():
-    print('A snapshot of my environment packages:')
-
-    misc_file = get_file_name(depth=1)
-    misc_dir = os.path.dirname(misc_file)
-    main_src_dir = '{}/../'.format(misc_dir)
-
-    req_file = '{}/wizzi_utils_requirements.txt'.format(main_src_dir)
-    _ = read_file_lines(fp=req_file, ack=True)
-    return
-
-
 def last_exception(tabs: int = 1):
     """
     prints last_exception occurred
@@ -2308,6 +2358,10 @@ def generate_requirements_file(fp_out: str, ack: bool = True) -> None:
         cuda_msg = remove_colors(cuda_msg)
         out.write('# {}\n'.format(cuda_msg))
 
+        nvidia_gpus_info = get_nvidia_gpus()
+        nvidia_gpus_info = remove_colors(nvidia_gpus_info)
+        out.write('# {}\n'.format(nvidia_gpus_info))
+
         try:
             from wizzi_utils.open_cv.open_cv_tools import get_cv_version
             cv_v = get_cv_version(ack=False, tabs=0)
@@ -2619,14 +2673,15 @@ def get_repo_root(repo_name: str = 'repo', ack: bool = False) -> str:
     return prefix/repo_name
     prefix change on each system
     """
-    repo_root_path = get_file_name(depth=1)
-    if repo_name in repo_root_path:
-        while not repo_root_path.endswith(repo_name):  # strip dir until we get to repo_name
-            repo_root_path = os.path.dirname(repo_root_path)
+    cwd = os.getcwd()
+    if repo_name in cwd:
+        cwd_split = cwd.split(repo_name)
+        repo_root_path = os.path.join(cwd_split[0], repo_name)
         if ack:
             print('\tRepoRoot={}'.format(repo_root_path))
     else:
         exception_error('{} not found in current path'.format(repo_name))
+        repo_root_path = 'N/A'
     return repo_root_path
 
 
@@ -2652,3 +2707,49 @@ def rename_folder(dir_path: str, new_name: str, ack: bool = True) -> str:
                 files_n = len(find_files_in_folder(dir_path=new_name_fp, file_suffix=''))
                 print('\t{} renamed to {} ({} files)'.format(dir_path, new_name_fp, files_n))
     return new_name_fp
+
+
+def download_wizzi_utils_env_snapshot(ack: bool = False):
+    """
+    snapshot of a working environment
+    """
+    try:
+        from wizzi_utils.socket.socket_tools import download_file
+        snapshot_file_path = './wizzi_utils_env_snapshot.txt'
+        if not os.path.exists(snapshot_file_path):
+            git_pref = 'https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi'
+            success = download_file(
+                url=f'{git_pref}/main/resources/wizzi_utils_env_snapshot.txt',
+                dst_path=snapshot_file_path)
+            if success and ack:
+                read_file_lines(fp=snapshot_file_path, ack=True)
+        else:
+            print(f'file {os.path.abspath(snapshot_file_path)} exists')
+
+    except (ImportError, ModuleNotFoundError, NameError, AttributeError) as err:
+        print(add_color('* tflite_runtime not Found. error: {}'.format(err), 'r'))
+
+    return
+
+
+def download_wizzi_utils_requirements_txt(ack: bool = False):
+    """
+    snapshot of a working environment
+    """
+    try:
+        from wizzi_utils.socket.socket_tools import download_file
+        req_file_path = './requirements.txt'
+        if not os.path.exists(req_file_path):
+            git_pref = 'https://raw.githubusercontent.com/2easy4wizzi/wizzi_utils_pypi'
+            success = download_file(
+                url=f'{git_pref}/main/resources/requirements.txt',
+                dst_path=req_file_path)
+            if success and ack:
+                read_file_lines(fp=req_file_path, ack=True)
+        else:
+            print(f'file {os.path.abspath(req_file_path)} exists')
+
+    except (ImportError, ModuleNotFoundError, NameError, AttributeError) as err:
+        print(add_color('* tflite_runtime not Found. error: {}'.format(err), 'r'))
+
+    return
