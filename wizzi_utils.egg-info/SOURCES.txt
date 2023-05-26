@@ -3,7 +3,6 @@ README.md
 setup.cfg
 setup.py
 wizzi_utils/__init__.py
-wizzi_utils/wizzi_utils_requirements.txt
 wizzi_utils.egg-info/PKG-INFO
 wizzi_utils.egg-info/SOURCES.txt
 wizzi_utils.egg-info/dependency_links.txt
@@ -64,6 +63,10 @@ wizzi_utils/tts/__init__.py
 wizzi_utils/tts/tts.py
 wizzi_utils/tts/test/__init__.py
 wizzi_utils/tts/test/test_tts.py
+wizzi_utils/google/__init__.py
+wizzi_utils/google/google_tools.py
+wizzi_utils/google/test/__init__.py
+wizzi_utils/google/test/test_google_tools.py
 wizzi_utils/json/__init__.py
 wizzi_utils/json/json_tools.py
 wizzi_utils/json/test/__init__.py
