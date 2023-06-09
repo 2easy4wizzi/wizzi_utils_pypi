@@ -90,8 +90,10 @@ def run_machine_buddy_gui_test():
         run_machine_buddy_gui(voice_idx=0, rate=150, volume=90, loc='tl', common_sentences=cs)
     except ImportError as e:
         mt.exception_error(e, real_exception=True)
-        mt.exception_error('try pip install PyQt5')
-        mt.exception_error('or pip install matplotlib')
+        mt.exception_error('try: pip install PyQt5')
+        mt.exception_error('pip install PyQt5')
+        mt.exception_error('pip install matplotlib')
+        mt.exception_error('python -m pip install --upgrade --force-reinstall PyQt5')
     return
 
 

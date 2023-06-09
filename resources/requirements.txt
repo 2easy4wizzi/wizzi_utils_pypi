@@ -31,8 +31,7 @@ numpy==1.23.3
 # pyttsx3==2.90
 
 # # optional text to speach gui
-# pyqt5-qt5==5.15.2  # TODO not working
-# TODO ImportError: cannot import name 'QtCore' from 'PyQt5' (unknown location)
+# pyqt5-qt5==5.15.2
 
 # # optional tflite
 # pip install --index-url https://google-coral.github.io/py-repo/ tflite_runtime  # windows 10

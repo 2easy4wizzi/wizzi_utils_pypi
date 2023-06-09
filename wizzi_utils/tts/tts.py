@@ -431,7 +431,7 @@ try:
             return
 
         @staticmethod
-        def keyPressEvent(event: QtGui.QKeyEvent):
+        def keyPressEvent(event: QtGui.QKeyEvent):  # noqa
             if event.key() in [QtCore.Qt.Key_Escape]:
                 print('keyPressEvent(): Qt plot: Esc was clicked. Terminating...')
                 MachineBuddyGui.get_qt_app().quit()
