@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: wizzi-utils
-Version: 8.0.3
+Version: 8.0.4
 Summary: Debugging tools and fast coding
 Home-page: https://github.com/2easy4wizzi/wizzi_utils_pypi
 Author: Gilad Eini
 Author-email: giladEini@gmail.com
 License: MIT
-Download-URL: https://github.com/2easy4wizzi/wizzi_utils_pypi/archive/refs/tags/v_8.0.3.tar.gz
+Download-URL: https://github.com/2easy4wizzi/wizzi_utils_pypi/archive/refs/tags/v_8.0.4.tar.gz
 Keywords: debugging tools,json,open cv,pyplot,socket,torch,tf lite
 Platform: windows
 Classifier: Development Status :: 4 - Beta
@@ -94,6 +94,7 @@ if __name__ == '__main__':
         seed=42,
         ipv4=True,
         cuda_off=False,
+        nvid_gpu=True,
         torch_v=True,
         tf_v=True,
         cv2_v=True,
