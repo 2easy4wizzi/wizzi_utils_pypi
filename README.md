@@ -73,6 +73,7 @@ if __name__ == '__main__':
         seed=42,
         ipv4=True,
         cuda_off=False,
+        nvid_gpu=True,
         torch_v=True,
         tf_v=True,
         cv2_v=True,

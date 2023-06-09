@@ -502,12 +502,19 @@ def end_profiler(pr: cProfile.Profile, rows: int = 40, ack: bool = False) -> str
 
 def set_seed(seed: int = 42) -> None:
     """
-    :param seed: setting numpy and random seeds
+    :param seed: setting seed using numpy, random and torch if exists
     :return:
     see main_wrapper_test() - uses set_seed
     """
     np.random.seed(seed)
     random.seed(seed)
+    try:
+        import torch  # noqa
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+    except (ModuleNotFoundError, Exception) as e:  # noqa
+        pass
+
     return
 
 
@@ -516,7 +523,7 @@ def version() -> str:
     :return:
     """
     # v = pkg_resources.require("wizzi_utils")[0].version
-    v = '8.0.3'
+    v = '8.0.4'
     return v
 
 

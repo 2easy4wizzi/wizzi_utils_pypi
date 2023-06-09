@@ -1,4 +1,3 @@
-import tkinter
 import numpy as np
 import sys
 import math
@@ -15,7 +14,6 @@ from matplotlib.backend_bases import CloseEvent
 from matplotlib.collections import PathCollection
 # noinspection PyProtectedMember
 from matplotlib.backends._backend_tk import TimerTk
-
 from wizzi_utils.misc import misc_tools as mt
 
 
@@ -667,9 +665,7 @@ def render_plot(fig: matplotlib.figure, block: bool = False, pause: float = 0.00
             set_figure_title(fig, old_title)
         else:
             plt.pause(pause)
-    except tkinter.TclError as e:
-        mt.exception_error('The plot was closed ! can\'t continue. TclError: {}'.format(e), tabs=0)
-    except:  # noqa: E722
+    except Exception as e:  # noqa
         mt.exception_error('The plot was closed ! can\'t continue. Error: {}'.format(sys.exc_info()[0]), tabs=0)
     return
 
