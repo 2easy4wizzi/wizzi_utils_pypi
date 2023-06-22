@@ -934,10 +934,27 @@ def generate_requirements_file_test(real_req: bool = False):
 
 def run_shell_command_test():
     mt.get_function_name_and_line(ack=True, tabs=0)
+
     if mt.is_windows():
-        mt.run_shell_command(cmd='dir')
+        print('dir with suppress output(bad idea with this command)')
+        mt.run_shell_command(cmd='dir', suppress_output=True)
+        print('dir without suppress output(good)')
+        mt.run_shell_command(cmd='dir', suppress_output=False)
+
+        print('bad command without suppress output and without print_if_exception(expecting error from shell)')
+        mt.run_shell_command(cmd='dirx1', suppress_output=False, print_if_exception=False)
+
+        print(
+            'bad command without suppress output and with print_if_exception(expecting error from shell and printing from the code)')
+        mt.run_shell_command(cmd='dirx2', suppress_output=False, print_if_exception=True)
+
+        print('bad command with suppress output and with print_if_exception(expecting printing from the code)')
+        mt.run_shell_command(cmd='dirx3', suppress_output=True, print_if_exception=True)
+
+        print('bad command with suppress output and without print_if_exception(expecting silent error)')
+        mt.run_shell_command(cmd='dirx4', suppress_output=True, print_if_exception=False)
     else:
-        mt.run_shell_command(cmd='ls')
+        mt.run_shell_command(cmd='ls')  # should behave the same as the above
     return
 
 

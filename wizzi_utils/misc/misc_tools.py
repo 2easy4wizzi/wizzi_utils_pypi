@@ -358,7 +358,7 @@ def get_cuda_version(ack: bool = False, tabs: int = 1) -> str:
 def get_nvidia_gpus() -> str:
     try:
         cmd = 'nvidia-smi --query-gpu=gpu_name,memory.total --format=csv,noheader'
-        gpu_str_lines = run_shell_command_and_get_out(cmd=cmd, ack_cmd=False)
+        gpu_str_lines = run_shell_command_and_get_out(cmd=cmd, ack_cmd=False, print_if_exception=False)
         # gpu_str_lines = ['Quadro RTX 4000, 8192 Mib', 'Quadro RTX 4000, 8192 Mib']
 
         gpu_str_all = ''
@@ -2258,30 +2258,51 @@ class FPS:
         return
 
 
-def run_shell_command(cmd: str, ack: bool = True) -> None:
+def run_shell_command(cmd: str, ack: bool = True, suppress_output: bool = False,
+                      print_if_exception: bool = True) -> None:
     try:
         if ack:
             print(add_color(cmd, ops='b'))
-        subprocess.check_call(cmd, shell=True)
+        if suppress_output:
+            # if your cmd is dir or ls, this is a bad idea to suppress output
+            # if you run an aux script that yield output that you dont need, then this is a good idea
+            subprocess.check_call(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        else:
+            # will force print if there is anything to print
+            subprocess.check_call(cmd, shell=True)
 
     except subprocess.CalledProcessError as e:
-        exception_error(e, real_exception=True)
+        if print_if_exception:  # shows what went wrong
+            exception_error(e, real_exception=True)
     return
 
 
-def run_shell_command_and_get_out(cmd: str, ack_cmd: bool = True, ack_out: bool = False) -> list:
+def run_shell_command_and_get_out(
+        cmd: str,
+        ack_cmd: bool = True,
+        ack_out: bool = False,
+        suppress_errors_from_shell: bool = True,
+        print_if_exception: bool = True,
+) -> list:
     out = ['Failed']
     try:
         if ack_cmd:
             print(add_color(cmd, ops='b'))
-        out = subprocess.check_output(cmd, shell=True)
-        out = out.decode("utf-8").replace('\t', '').replace('\r', '').strip()
-        out = out.split('\n')
+
+        if suppress_errors_from_shell:
+            # let us handle the errors in the except block
+            out = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
+        else:
+            # will force print errors regardless to the except block
+            out = subprocess.check_output(cmd, shell=True)
+
+        out = out.decode("utf-8").replace('\t', '').replace('\r', '').strip().split('\n')
         if ack_out:
             for i, line in enumerate(out):
                 print('{}){}'.format(i, line))
     except subprocess.CalledProcessError as e:
-        exception_error(e, real_exception=True)
+        if print_if_exception:  # shows what went wrong
+            exception_error(e, real_exception=True)
     return out
 
 
