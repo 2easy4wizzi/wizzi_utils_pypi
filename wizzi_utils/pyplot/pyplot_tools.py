@@ -12,8 +12,6 @@ import matplotlib.axes
 from matplotlib.backend_bases import KeyEvent
 from matplotlib.backend_bases import CloseEvent
 from matplotlib.collections import PathCollection
-# noinspection PyProtectedMember
-from matplotlib.backends._backend_tk import TimerTk
 from wizzi_utils.misc import misc_tools as mt
 
 
@@ -714,7 +712,7 @@ def save_plot(path: str, ack: bool = True, tabs: int = 1) -> None:
     return
 
 
-def add_timer(fig: matplotlib.figure, max_time_seconds: float) -> TimerTk:
+def add_timer(fig: matplotlib.figure, max_time_seconds: float) -> any:
     """
     add timer for current fig window
     :param fig:
